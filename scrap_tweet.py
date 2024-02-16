@@ -102,10 +102,10 @@ def preprocess_text(text):
     return processed_text
 
 def get_predict(filter_data):
-    with open('best_rf_model.pkl', 'rb') as model_file:
+    with open('model/best_rf_model.pkl', 'rb') as model_file:
         best_rf_model = pickle.load(model_file)
 
-    with open('tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
+    with open('model/tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
         vectorizer = pickle.load(vectorizer_file)
 
     # TF-IDF Vectorization pada data yang ingin diprediksi
