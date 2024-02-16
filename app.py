@@ -10,8 +10,11 @@ from ntscraper import Nitter
 import nltk
 import requests
 import os
+from PIL import Image
+import numpy as np
 import plotly.express as px
-from scrap_tweet import count_common_words, take_dataframe, preprocess_text, get_predict, scrap_tweet, convert, label_meanings
+from scrap_tweet import count_common_words, take_dataframe, preprocess_text
+from scrap_tweet import get_predict, scrap_tweet, convert, label_meanings, plot_wordcloud
 
 # nltk.download('stopwords')
 # nltk.download('punkt')
@@ -72,8 +75,9 @@ def analyze(predict_tweet):
     fig = px.treemap(top_words_df2, path=['path', 'label'], values='value', title=f'Tree Of Unique {selected_meaning} Words')
     st.plotly_chart(fig)
 
-    return 
-    raw_text = [word for word_list in filtered_data_tweet['text'] for word in word_list]
+    # word cloud
+    pos_mask = np.array(Image.open('img/twitter_mask.png'))
+    plot_wordcloud(filtered_data_tweet.text,mask=pos_mask,color='white',max_font_size=100,title_size=30,title=f"WordCloud of {selected_meaning} Tweets")
 
 
 st.header("SapuJagad 99")

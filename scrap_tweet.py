@@ -13,14 +13,14 @@ import nltk
 import pandas as pd
 import requests
 import re
+import io
 import string
 from nltk.tokenize import word_tokenize
 from collections import Counter
-# from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
 
-# stopwords = set(STOPWORDS)
-# from app import username
+stopwords = set(STOPWORDS)
 
 
 # Load environment variables from .env file
@@ -139,3 +139,38 @@ def count_common_words(text, n=20):
 
 # Load custom stopwords from CSV
 custom_stopwords = load_custom_stopwords("stopwordbahasaV2.csv")
+
+def plot_wordcloud(text, mask=None, max_words=200, max_font_size=100, figure_size=(24.0,16.0), color='white',
+                   title=None, title_size=40, image_color=False):
+    stopwords = set(STOPWORDS)
+    more_stopwords = {'u', "im"}
+    stopwords = stopwords.union(more_stopwords)
+
+    wordcloud = WordCloud(background_color=color,
+                          stopwords=stopwords,
+                          max_words=max_words,
+                          max_font_size=max_font_size,
+                          random_state=42,
+                          width=400,
+                          height=200,
+                          mask=mask)
+    wordcloud.generate(str(text))
+
+    plt.figure(figsize=figure_size)
+    if image_color:
+        image_colors = ImageColorGenerator(mask)
+        plt.imshow(wordcloud.recolor(color_func=image_colors), interpolation="bilinear")
+        plt.title(title, fontdict={'size': title_size, 'verticalalignment': 'bottom'})
+    else:
+        plt.imshow(wordcloud)
+        plt.title(title, fontdict={'size': title_size, 'color': 'black', 'verticalalignment': 'bottom'})
+    plt.axis('off')
+    plt.tight_layout()
+
+    # Simpan gambar ke buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Tampilkan gambar di Streamlit
+    st.image(buf, caption=title)
